@@ -367,7 +367,7 @@ class tmhOAuth {
       if ($supports_curl_file && ($v instanceof CurlFile)) {
         // leave $v alone
       } elseif ($this->request_settings['multipart']) {
-        $v = $this->multipart_escape($v);
+        // $v = $this->multipart_escape($v); // Json testing
       } else {
         $v = $this->safe_encode($v);
       }
@@ -550,6 +550,7 @@ class tmhOAuth {
   public function user_request($options=array()) {
     $options = array_merge($this->default_options(), $options, array(
       'with_user' => true,
+      'multipart' => true,
     ));
     $this->reset_request_settings($options);
     return $this->oauth1_request();
@@ -585,6 +586,7 @@ class tmhOAuth {
     $this->prepare_signing_key();
     $this->prepare_oauth_signature();
     $this->prepare_auth_header();
+	$this->request_settings['headers']['Content-Type'] = 'application/json'; // Json testing
     return $this->curlit();
   }
 
@@ -784,7 +786,7 @@ class tmhOAuth {
     } elseif ($this->request_settings['method'] == 'POST' || $this->request_settings['method'] == 'PUT') {
       $postfields = array();
       if (isset($this->request_settings['postfields']))
-        $postfields = $this->request_settings['postfields'];
+        $postfields = json_encode($this->request_settings['params']); // Json testing
 
       curl_setopt($c, CURLOPT_POSTFIELDS, $postfields);
     }
