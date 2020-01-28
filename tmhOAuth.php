@@ -280,6 +280,7 @@ class tmhOAuth {
     $scheme = $parts['scheme'];
     $host   = $parts['host'];
     $path   = isset($parts['path']) ? $parts['path'] : false;
+    $query  = isset($parts['query']) ? '?'.$this->safe_encode($parts['query']) : false;
 
     $port or $port = ($scheme == 'https') ? '443' : '80';
 
@@ -289,8 +290,9 @@ class tmhOAuth {
 
     // the scheme and host MUST be lowercase
     $this->request_settings['url'] = strtolower("$scheme://$host");
-    // but not the path
-    $this->request_settings['url'] .= $path;
+    // but not the path and query string
+    $this->request_settings['url'] .= $path.$query;
+    $this->request_settings['query_string'] = $query;
   }
 
   /**
